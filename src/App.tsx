@@ -1,40 +1,47 @@
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-import { NavLink, Outlet } from 'react-router-dom';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 
-export const App = () => (
-  <div className="has-navbar-fixed-top">
-    <nav
-      className="navbar is-light is-fixed-top is-mobile has-shadow"
-      data-cy="Nav"
-    >
-      <div className="container">
-        <div className="navbar-brand">
-          <NavLink
-            to="/"
-            end
-            className={({ isActive }) =>
-              classNames('navbar-item', { 'is-active': isActive })
-            }
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/tabs"
-            className={({ isActive }) =>
-              classNames('navbar-item', { 'is-active': isActive })
-            }
-          >
-            Tabs
-          </NavLink>
+export const App = () => {
+  const location = useLocation();
+
+  const isHome = location.pathname === '/';
+  const isTabs = location.pathname.startsWith('/tabs');
+
+  return (
+    <>
+      <nav
+        className="navbar is-light is-fixed-top is-mobile has-shadow"
+        data-cy="Nav"
+      >
+        <div className="container">
+          <div className="navbar-brand">
+            <Link
+              to="/"
+              className={classNames('navbar-item', { 'is-active': isHome })}
+              aria-current={isHome ? 'page' : undefined}
+            >
+              Home
+            </Link>
+
+            <Link
+              to="/tabs"
+              className={classNames('navbar-item', { 'is-active': isTabs })}
+              aria-current={isTabs ? 'page' : undefined}
+            >
+              Tabs
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      <div className="section">
+        <div className="container">
+          <Outlet />
         </div>
       </div>
-    </nav>
-
-    <div className="section">
-      <Outlet />
-    </div>
-  </div>
-);
+    </>
+  );
+};
